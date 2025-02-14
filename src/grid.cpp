@@ -23,14 +23,13 @@ std::vector<sf::RectangleShape> create_grid(int screen_w, int screen_h, int squa
         {
             sf::RectangleShape square(sf::Vector2f(square_length, square_length));
             square.setPosition(i, j);
-            if (i % (2 * square_length) == 0 && j % (2 * square_length) == 0) {
-                square.setFillColor(sf::Color::White);
-            }
-            else if (i % (2 * square_length) != 0 && j % (2 * square_length) != 0) {
-                square.setFillColor(sf::Color::Blue);
+            int square_i = i / square_length;
+            int square_j = j / square_length;
+            if ((square_i + square_j) % 2 == 0) {
+                    square.setFillColor(sf::Color::White);
             }
             else {
-                square.setFillColor(sf::Color::Green);
+                square.setFillColor(sf::Color::Blue);
             }
             squares.push_back(square);
         }
@@ -51,11 +50,8 @@ void update_grid(std::vector<sf::RectangleShape>& squares)
 {
     for (auto& square : squares)
     {
+
         if (square.getFillColor() == sf::Color::White)
-        {
-            square.setFillColor(sf::Color::Green);
-        }
-        else if (square.getFillColor() == sf::Color::Green)
         {
             square.setFillColor(sf::Color::Blue);
         }
