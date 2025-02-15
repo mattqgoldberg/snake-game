@@ -17,6 +17,10 @@ int main()
 
     Entity player(GRID_SIZE, sf::Vector2f(10, 10), sf::Color::Green, 6);
 
+    sf::Clock clock;
+
+    sf::Vector2f direction(0, 0);
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -27,8 +31,14 @@ int main()
                 window.close();
         }
 
-        handleInput(player);
+        direction = handleInput(direction);
 
+        if (clock.getElapsedTime().asMilliseconds() > 200)
+        {
+            player.move(direction);
+            clock.restart();
+        }
+        
         window.clear();
         grid.draw(window);
         player.draw(window);

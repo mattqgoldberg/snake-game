@@ -1,25 +1,26 @@
 #include <SFML/Window.hpp>
 #include "entity.h"
+#include "input.h"
+#include <iostream>
+#include <SFML/Graphics.hpp>
 
-void handleInput(Entity character) {
+
+sf::Vector2f handleInput(sf::Vector2f direction) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
     {
-        // left key is pressed: move our character
-        character.move({-1.f, 0.f});
-    }
+        return sf::Vector2f(-1, 0);
+    }   
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
     {
-        // right key is pressed: move our character
-        character.move({1.f, 0.f});
+        return sf::Vector2f(1, 0);
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
     {
-        // up key is pressed: move our character
-        character.move({0.f, -1.f});
+        return sf::Vector2f(0, -1);
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
     {
-        // down key is pressed: move our character
-        character.move({0.f, 1.f});
+        return sf::Vector2f(0, 1);
     }
+    return direction;
 }

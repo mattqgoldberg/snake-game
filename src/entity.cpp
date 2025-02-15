@@ -1,15 +1,16 @@
 #include <SFML/Graphics.hpp>
 #include "entity.h"
+#include <iostream>
 
 Entity::Entity(int grid_size, sf::Vector2f position, sf::Color color, int size)
 {
     shape = sf::RectangleShape(sf::Vector2f(size, size));
-    position.x = position.x * grid_size + (grid_size - size) / 2;
-    position.y = position.y * grid_size + (grid_size - size) / 2;
-    shape.setPosition(position);
-    shape.setFillColor(color);
-    grid_size = grid_size;
-    size = size;
+    this->position = sf::Vector2f(position.x * grid_size + (grid_size - size) / 2,
+                                    position.y * grid_size + (grid_size - size) / 2);
+    this->shape.setPosition(this->position);
+    this->shape.setFillColor(color);
+    this->grid_size = grid_size;
+    this->size = size;
 }
 
 void Entity::draw(sf::RenderWindow& window)
@@ -19,6 +20,11 @@ void Entity::draw(sf::RenderWindow& window)
 
 void Entity::move(sf::Vector2f direction)
 {
-    position += sf::Vector2f(direction.x * grid_size, direction.y * grid_size);
-    shape.setPosition(position);
+    std::cout << "Current position: " << this->position.x << ", " << this->position.y << std::endl;
+    std::cout << "Current shape position: " << this->shape.getPosition().x << ", " << this->shape.getPosition().y << std::endl;
+    this->position.x += direction.x * this->grid_size;
+    this->position.y += direction.y * this->grid_size;
+    std::cout << "Moving to: " << this->position.x << ", " << this->position.y << std::endl;
+    this->shape.setPosition(position);
+    std::cout << "Shape position: " << this->shape.getPosition().x << ", " << this->shape.getPosition().y << std::endl;
 }

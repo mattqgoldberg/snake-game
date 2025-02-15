@@ -1,3 +1,4 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-void handleInput(Entity character);
+
+sf::Vector2f handleInput(sf::Vector2f direction);
