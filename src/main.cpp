@@ -11,15 +11,7 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(640, 480), "SFML Application");
     
-    std::vector<Entity> entities = {
-        {sf::Color::Red, sf::Vector2f(0, 0), 2},
-        {sf::Color::Green, sf::Vector2f(10, 10), 4},
-        {sf::Color::Blue, sf::Vector2f(5, 5), 8}
-    };
-    
-    std::vector<GameSquare> grid = create_grid(WINDOW_WIDTH, WINDOW_HEIGHT, GRID_SIZE, entities);
-
-    sf::Clock clock;
+    Grid grid(WINDOW_WIDTH, WINDOW_HEIGHT, GRID_SIZE);
 
     while (window.isOpen())
     {
@@ -32,12 +24,7 @@ int main()
         }
 
         window.clear();
-        draw_grid(window, grid);
-        // if (clock.getElapsedTime().asSeconds() > 0.5)
-        // {
-        //     update_grid(squares);
-        //     clock.restart();
-        // }
+        grid.draw(window);
         window.display();
     }
 }
