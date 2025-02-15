@@ -2,6 +2,8 @@
 #include <SFML/System.hpp>
 #include <iostream>
 #include "grid.h"
+#include "entity.h"
+#include "input.h"
 
 int WINDOW_WIDTH = 640;
 int WINDOW_HEIGHT = 480;
@@ -13,6 +15,8 @@ int main()
     
     Grid grid(WINDOW_WIDTH, WINDOW_HEIGHT, GRID_SIZE);
 
+    Entity player(GRID_SIZE, sf::Vector2f(10, 10), sf::Color::Green, 6);
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -23,8 +27,11 @@ int main()
                 window.close();
         }
 
+        handleInput(player);
+
         window.clear();
         grid.draw(window);
+        player.draw(window);
         window.display();
     }
 }
