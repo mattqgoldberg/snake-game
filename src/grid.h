@@ -1,5 +1,4 @@
-#ifndef GRID_H
-#define GRID_H
+#pragma once
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <optional>
@@ -19,5 +18,3 @@ class Grid {
         int screen_h;
         int square_length;
 };
-
-#endif
