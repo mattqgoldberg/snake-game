@@ -73,3 +73,22 @@ bool Entity::wouldBeOutOfBounds(sf::Vector2f direction, sf::Vector2f grid_size)
 
     return newPos.x < 0 || newPos.x + playerBounds.width > grid_size.x || newPos.y < 0 || newPos.y + playerBounds.height > grid_size.y;
 }
+
+bool Entity::wouldCollide(Entity otherEntity, sf::Vector2f direction)
+{
+    if (direction == sf::Vector2f(0,0))
+    {
+        return false;
+    }
+
+    auto playerBounds = this->getGlobalBounds();
+    auto otherBounds = otherEntity.getGlobalBounds();
+    auto playerPos = this->getPosition();
+    auto otherPos = otherEntity.getPosition();
+    direction.x *= this->grid_size;
+    direction.y *= this->grid_size;
+    auto newPos = playerPos + direction;
+    sf::FloatRect newBounds(newPos, playerBounds.getSize());
+
+    return newBounds.intersects(otherBounds);
+}

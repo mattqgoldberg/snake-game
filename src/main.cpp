@@ -17,55 +17,6 @@ int GRID_HEIGHT = 700;
 int GRID_SIZE = 100;
 bool game_over = false;
 
-bool wouldCollide(Entity player, Entity fruit, sf::Vector2f direction)
-{
-    if (direction == sf::Vector2f(0,0))
-    {
-        return false;
-    }
-
-    auto playerBounds = player.getGlobalBounds();
-    auto fruitBounds = fruit.getGlobalBounds();
-
-    auto playerPos = player.getPosition();
-    auto fruitPos = fruit.getPosition();
-
-    
-    direction.x *= GRID_SIZE;
-    direction.y *= GRID_SIZE;
-    auto newPos = playerPos + direction;
-
-    sf::FloatRect newBounds(newPos, playerBounds.getSize());
-
-    return newBounds.intersects(fruitBounds);
-}
-
-bool wouldCollide(Entity player, std::list<Entity> entities, sf::Vector2f direction)
-{
-    if (direction == sf::Vector2f(0,0))
-    {
-        return false;
-    }
-
-    auto playerBounds = player.getGlobalBounds();
-    auto playerPos = player.getPosition();
-    direction.x *= GRID_SIZE;
-    direction.y *= GRID_SIZE;
-    auto newPos = playerPos + direction;
-    sf::FloatRect newBounds(newPos, playerBounds.getSize());
-
-    for (auto& entity : entities)
-    {
-        auto entityBounds = entity.getGlobalBounds();
-        if (newBounds.intersects(entityBounds))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 void randomizeMatt(Entity& matt, Entity player)
 {
     sf::Vector2f mattSquare(0,0);
@@ -82,7 +33,7 @@ void randomizeMatt(Entity& matt, Entity player)
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SFML Application");
+    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Snake Game");
     
     Grid grid(GRID_WIDTH, GRID_HEIGHT, GRID_SIZE);
 
@@ -207,11 +158,14 @@ int main()
             if (direction != sf::Vector2f(0,0) && !game_over)
             {
 
-                if (wouldCollide(player.getHead(), player.getEntities(), direction))
+                for (auto& entity : player.getBabies())
                 {
-                    game_over = true;
-                    baby_sound.stop();
-                    no_sound.play();
+                    if (player.getHead().wouldCollide(entity, direction))
+                    {
+                        game_over = true;
+                        baby_sound.stop();
+                        no_sound.play();
+                    }
                 }
 
                 if (player.getHead().wouldBeOutOfBounds(direction, sf::Vector2f(GRID_WIDTH, GRID_HEIGHT)))
@@ -221,9 +175,8 @@ int main()
                     no_sound.play();
                 }
 
-                if (wouldCollide(player.getHead(), matt, direction))
+                if (player.getHead().wouldCollide(matt, direction))
                 {
-                    //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
                     randomizeMatt(matt, player.getHead());
                     
                     player.increment_score();

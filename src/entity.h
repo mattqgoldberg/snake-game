@@ -14,6 +14,7 @@ public:
     void centerInSquare(sf::Vector2f square_position);
     sf::Vector2f getSquaredPosition();
     bool wouldBeOutOfBounds(sf::Vector2f direction, sf::Vector2f grid_size);
+    bool wouldCollide(Entity entity, sf::Vector2f direction);
 private:
     sf::Sprite sprite;
     int grid_size;

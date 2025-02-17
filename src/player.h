@@ -14,6 +14,7 @@ class Player {
         void addEntity(Entity entity);
         void printPositions();
         std::list<Entity> getEntities();
+        std::list<Entity> getBabies();
         void reset();
     private:
         std::list<Entity> entities;

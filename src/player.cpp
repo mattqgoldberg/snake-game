@@ -69,6 +69,16 @@ std::list<Entity> Player::getEntities() {
     return this->entities;
 }
 
+std::list<Entity> Player::getBabies() {
+    std::list<Entity> babies;
+    for (auto it = this->entities.begin(); it != this->entities.end(); it++) {
+        if (it != this->entities.begin()) {
+            babies.push_back(*it);
+        }
+    }
+    return babies;
+}
+
 void Player::reset() {
     auto head = this->entities.front();
     this->entities.clear();
