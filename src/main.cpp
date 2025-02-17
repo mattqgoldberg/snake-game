@@ -145,6 +145,7 @@ int main()
             player.reset();
             randomizeMatt(matt, player.getHead());
             direction = sf::Vector2f(0,0);
+            movement_direction = sf::Vector2f(0,0);
             std::string str_score = "Score: " + std::to_string(player.get_score());
             scoreText.setString(str_score);
         }

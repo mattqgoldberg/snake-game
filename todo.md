@@ -1,4 +1,5 @@
 # To-do list:
 
-1. Optimize/comment
-2. settings menu
+- Optimize/comment
+- Settings/pause menu
+- Add high score
