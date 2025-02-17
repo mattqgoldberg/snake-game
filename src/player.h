@@ -1,5 +1,6 @@
 #pragma once
 #include "entity.h"
+#include <list>
 
 class Player {
     public:
@@ -8,8 +9,12 @@ class Player {
         int get_score();
         void draw(sf::RenderWindow& window);
         void move(sf::Vector2f direction);
-        Entity getEntity();
+        Entity getHead();
+        Entity getTail();
+        void addEntity(Entity entity);
+        void printPositions();
+        std::list<Entity> getEntities();
     private:
-        Entity entity;
+        std::list<Entity> entities;
         int score;
 };

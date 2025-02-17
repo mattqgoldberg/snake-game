@@ -28,8 +28,7 @@ Entity::Entity(int grid_size, sf::Vector2f position, sf::Sprite sprite)
 {
     auto bounds = sprite.getGlobalBounds();
     this->size = bounds.getSize();
-    sprite.setPosition(position.x * grid_size + (grid_size - this->size.x) / 2,
-    position.y * grid_size - this->size.y + grid_size - 1);
+    sprite.setPosition(position);
     
     this->shape = sprite;
     this->grid_size = grid_size;
@@ -40,10 +39,20 @@ void Entity::draw(sf::RenderWindow& window)
     std::visit([&window](auto& s) { window.draw(s); }, this->shape);
 }
 
+void Entity::setPosition(sf::Vector2f position)
+{
+    std::visit([position](auto& s) { s.setPosition(position); }, this->shape);
+}
+
+sf::Vector2f Entity::getPosition()
+{
+    return std::visit([](auto& s) { return s.getPosition(); }, this->shape);
+}
+
 void Entity::move(sf::Vector2f direction)
 {
     direction = sf::Vector2f(direction.x * this->grid_size, direction.y * this->grid_size);
-    auto position = std::visit([](auto& s) { return s.getPosition(); }, this->shape);
+    auto position = this->getPosition();
     std::visit([direction, position](auto& s) { s.setPosition(position + direction); }, this->shape);
     //std::cout << "Position: " << std::visit([direction, position](auto& s) { return s.getPosition().x; }, this->shape) << std::endl;
 }
