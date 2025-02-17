@@ -17,14 +17,6 @@ int GRID_HEIGHT = 700;
 int GRID_SIZE = 100;
 bool game_over = false;
 
-bool detectCollision(Entity player, Entity fruit)
-{
-    auto playerBounds = player.getGlobalBounds();
-    auto fruitBounds = fruit.getGlobalBounds();
-
-    return playerBounds.intersects(fruitBounds);
-}
-
 bool wouldCollide(Entity player, Entity fruit, sf::Vector2f direction)
 {
     if (direction == sf::Vector2f(0,0))
@@ -36,7 +28,6 @@ bool wouldCollide(Entity player, Entity fruit, sf::Vector2f direction)
     auto fruitBounds = fruit.getGlobalBounds();
 
     auto playerPos = player.getPosition();
-    std::cout << "Player position: " << playerPos.x << ", " << playerPos.y << std::endl;
     auto fruitPos = fruit.getPosition();
 
     
@@ -44,8 +35,6 @@ bool wouldCollide(Entity player, Entity fruit, sf::Vector2f direction)
     direction.y *= GRID_SIZE;
     auto newPos = playerPos + direction;
 
-    std::cout << "New position: " << newPos.x << ", " << newPos.y << std::endl;
-    std::cout << "Fruit position: " << fruitPos.x << ", " << fruitPos.y << std::endl;
     sf::FloatRect newBounds(newPos, playerBounds.getSize());
 
     return newBounds.intersects(fruitBounds);
@@ -77,35 +66,18 @@ bool wouldCollide(Entity player, std::list<Entity> entities, sf::Vector2f direct
     return false;
 }
 
-bool wouldBeOutOfBounds(Entity player, sf::Vector2f direction)
+void randomizeMatt(Entity& matt, Entity player)
 {
-    if (direction == sf::Vector2f(0,0))
-    {
-        return false;
-    }
-
-    auto playerBounds = player.getGlobalBounds();
-    auto playerPos = player.getPosition();
-    direction.x *= GRID_SIZE;
-    direction.y *= GRID_SIZE;
-    auto newPos = playerPos + direction;
-    sf::FloatRect newBounds(newPos, playerBounds.getSize());
-
-    return newPos.x < 0 || newPos.x + playerBounds.width > GRID_WIDTH || newPos.y < 0 || newPos.y + playerBounds.height > GRID_HEIGHT;
-}
-
-
-void randomizeMatt(Entity& matt)
-{
-    int x_max = GRID_WIDTH / GRID_SIZE - 1;
-    int y_max = GRID_HEIGHT / GRID_SIZE - 1;
-    int rand_x = std::rand() % (x_max + 1);
-    int rand_y = std::rand() % (y_max + 1);
-    auto size = matt.getGlobalBounds().getSize();
-    sf::Vector2f playerPos(0,0);
-    playerPos.x =  rand_x * GRID_SIZE + (GRID_SIZE - size.x) / 2;
-    playerPos.y = rand_y * GRID_SIZE - size.y + GRID_SIZE - 1;
-    matt.setPosition(playerPos);
+    sf::Vector2f mattSquare(0,0);
+    do {
+        int x_max = GRID_WIDTH / GRID_SIZE - 1;
+        int y_max = GRID_HEIGHT / GRID_SIZE - 1;
+        int rand_x = std::rand() % (x_max + 1);
+        int rand_y = std::rand() % (y_max + 1);
+        auto size = matt.getGlobalBounds().getSize();
+        mattSquare = sf::Vector2f(rand_x,rand_y);
+        matt.centerInSquare(mattSquare);
+    } while (mattSquare == player.getSquaredPosition());
 }
 
 int main()
@@ -131,26 +103,12 @@ int main()
         return -1;
     }
 
-    sf::Sprite mattSprite;
-    mattSprite.setTexture(mattTexture);
-    auto bounds = mattSprite.getGlobalBounds();
-    float scaleX = (GRID_SIZE * 0.7) / bounds.width;
-    float scaleY = (GRID_SIZE * 0.9) / bounds.height;
-    mattSprite.setScale(scaleX, scaleY);
-
-    sf::Vector2f mattPos(0,0);
-    mattPos.x =  5 * GRID_SIZE + (GRID_SIZE - bounds.width) / 2;
-    mattPos.y = 5 * GRID_SIZE - bounds.height + GRID_SIZE - 1;
-    Entity matt(GRID_SIZE, mattPos, mattSprite);
-    
-
     sf::Sprite playerSprite;
     playerSprite.setTexture(playerTexture);
-    bounds = playerSprite.getGlobalBounds();
-    scaleX = (GRID_SIZE * 0.67) / bounds.width;
-    scaleY = (GRID_SIZE * 0.87) / bounds.height;
+    auto bounds = playerSprite.getGlobalBounds();
+    float scaleX = (GRID_SIZE * 0.67) / bounds.width;
+    float scaleY = (GRID_SIZE * 0.87) / bounds.height;
     playerSprite.setScale(scaleX, scaleY);
-
 
     sf::Sprite miniSprite;
     miniSprite.setTexture(playerTexture);
@@ -158,15 +116,29 @@ int main()
     scaleY = (GRID_SIZE * 0.37) / bounds.height;
     miniSprite.setScale(scaleX, scaleY);
 
-    sf::Vector2f playerPos(3,3);
-    auto size = playerSprite.getGlobalBounds().getSize();
-    playerPos.x =  playerPos.x * GRID_SIZE + (GRID_SIZE - size.x) / 2;
-    playerPos.y = playerPos.y * GRID_SIZE - size.y + GRID_SIZE - 1;
-    Entity playerEntity(GRID_SIZE, playerPos, playerSprite);
+    sf::Sprite miniMattSprite;
+    miniMattSprite.setTexture(mattTexture);
+    scaleX = (GRID_SIZE * 0.4) / bounds.width;
+    scaleY = (GRID_SIZE * 0.4) / bounds.height;
+    miniMattSprite.setScale(scaleX, scaleY);
 
+
+    sf::Vector2f playerSquare(3,3);
+    Entity playerEntity(GRID_SIZE, sf::Vector2f(0,0), playerSprite);
+    playerEntity.centerInSquare(playerSquare);
     Player player(playerEntity);
 
-    
+    sf::Sprite mattSprite;
+    mattSprite.setTexture(mattTexture);
+    bounds = mattSprite.getGlobalBounds();
+    scaleX = (GRID_SIZE * 0.7) / bounds.width;
+    scaleY = (GRID_SIZE * 0.9) / bounds.height;
+    mattSprite.setScale(scaleX, scaleY);
+
+    sf::Vector2f mattPos(0,0);
+    Entity matt(GRID_SIZE, mattPos, mattSprite);
+    randomizeMatt(matt, playerEntity);
+
     sf::Font font;
     font.loadFromFile("TimesNewRoman.otf");
     sf:: Text scoreText;
@@ -214,14 +186,24 @@ int main()
         }
 
         direction = handleInput(direction);
-        
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && game_over)
+        {
+            game_over = false;
+            player.reset();
+            randomizeMatt(matt, player.getHead());
+            direction = sf::Vector2f(0,0);
+            std::string str_score = "Score: " + std::to_string(player.get_score());
+            scoreText.setString(str_score);
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+        {
+            direction = sf::Vector2f(0,0);
+        }
 
         if (clock.getElapsedTime().asMilliseconds() > 200)
         {
-
-             
-
-
             if (direction != sf::Vector2f(0,0) && !game_over)
             {
 
@@ -232,7 +214,7 @@ int main()
                     no_sound.play();
                 }
 
-                if (wouldBeOutOfBounds(player.getHead(), direction))
+                if (player.getHead().wouldBeOutOfBounds(direction, sf::Vector2f(GRID_WIDTH, GRID_HEIGHT)))
                 {
                     game_over = true;
                     baby_sound.stop();
@@ -242,14 +224,18 @@ int main()
                 if (wouldCollide(player.getHead(), matt, direction))
                 {
                     //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                    randomizeMatt(matt);
+                    randomizeMatt(matt, player.getHead());
                     
                     player.increment_score();
-                    Entity newPlayerEntity = Entity(GRID_SIZE, player.getTail().getPosition(), miniSprite);
+                    int randomNumber = std::rand() % 2;
+                    auto babySprite = (randomNumber == 0) ? miniSprite : miniMattSprite;
+                    
+                    auto babySquare = player.getTail().getSquaredPosition();
+                    Entity newPlayerEntity(GRID_SIZE, sf::Vector2f(0,0), babySprite);
+                    newPlayerEntity.centerInSquare(babySquare);
                     player.move(direction);
 
                     player.addEntity(newPlayerEntity);
-                    player.increment_score();
                     baby_sound.play();
                     std::string str_score = "Score: " + std::to_string(player.get_score());
                     scoreText.setString(str_score);

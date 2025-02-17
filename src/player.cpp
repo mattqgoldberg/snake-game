@@ -34,13 +34,13 @@ void Player::move(sf::Vector2f direction) {
     if (this->entities.empty()) return;
 
     auto it = this->entities.begin();
-    sf::Vector2f prev_pos = it->getPosition();;
+    sf::Vector2f prev_pos = it->getSquaredPosition();;
     it->move(direction);
     it++;
 
     do {
-        sf::Vector2f temp = it->getPosition();
-        it->setPosition(prev_pos);
+        auto temp = it->getSquaredPosition();
+        it->centerInSquare(prev_pos);
         prev_pos = temp;
         it++;
     }
@@ -67,4 +67,16 @@ void Player::addEntity(Entity entity) {
 
 std::list<Entity> Player::getEntities() {
     return this->entities;
+}
+
+void Player::reset() {
+    auto head = this->entities.front();
+    this->entities.clear();
+    this->score = 0;
+
+
+
+
+    head.centerInSquare(sf::Vector2f(3, 3));
+    this->entities.push_back(head);
 }

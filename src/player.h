@@ -14,6 +14,7 @@ class Player {
         void addEntity(Entity entity);
         void printPositions();
         std::list<Entity> getEntities();
+        void reset();
     private:
         std::list<Entity> entities;
         int score;

@@ -5,17 +5,17 @@
 
 class Entity {
 public:
-    Entity();
-    Entity(int grid_size, sf::Vector2f position, sf::Color color, sf::Vector2f size);
     Entity(int grid_size, sf::Vector2f position, sf::Sprite sprite);
     void setPosition(sf::Vector2f position);
     void move(sf::Vector2f direction);
     void draw(sf::RenderWindow& window);
     sf::FloatRect getGlobalBounds();
     sf::Vector2f getPosition();
-
+    void centerInSquare(sf::Vector2f square_position);
+    sf::Vector2f getSquaredPosition();
+    bool wouldBeOutOfBounds(sf::Vector2f direction, sf::Vector2f grid_size);
 private:
-    std::variant<sf::RectangleShape, sf::Sprite> shape;
+    sf::Sprite sprite;
     int grid_size;
     sf::Vector2f size;
 };
