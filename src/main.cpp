@@ -125,6 +125,7 @@ int main()
     sf::Clock clock;
 
     sf::Vector2f direction(0, 0);
+    sf::Vector2f movement_direction(0, 0);
 
     while (window.isOpen())
     {
@@ -136,7 +137,7 @@ int main()
                 window.close();
         }
 
-        direction = handleInput(direction);
+        direction = handleInput(movement_direction, direction);
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && game_over)
         {
@@ -186,6 +187,7 @@ int main()
                     auto babySquare = player.getTail().getSquaredPosition();
                     Entity newPlayerEntity(GRID_SIZE, sf::Vector2f(0,0), babySprite);
                     newPlayerEntity.centerInSquare(babySquare);
+                    movement_direction = direction;
                     player.move(direction);
 
                     player.addEntity(newPlayerEntity);
@@ -196,6 +198,7 @@ int main()
                 }
                 else {
                     player.move(direction);
+                    movement_direction = direction;
                 }
             }
             clock.restart();

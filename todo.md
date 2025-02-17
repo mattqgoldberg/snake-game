@@ -1,5 +1,4 @@
 # To-do list:
 
-1. Fix collision bugs
-2. Optimize/comment
-3. settings menu
+1. Optimize/comment
+2. settings menu

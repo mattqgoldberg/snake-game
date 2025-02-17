@@ -5,29 +5,30 @@
 #include <SFML/Graphics.hpp>
 
 
-sf::Vector2f handleInput(sf::Vector2f direction) {
-    sf::Vector2f new_direction = direction;
+sf::Vector2f handleInput(sf::Vector2f movement_dir, sf::Vector2f current_dir) {
+
+    sf::Vector2f new_dir = current_dir;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
     {
-        new_direction = sf::Vector2f(-1, 0);
+       new_dir = sf::Vector2f(-1,0);
     }   
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
     {
-        new_direction = sf::Vector2f(1, 0);
+        new_dir = sf::Vector2f(1, 0);
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
     {
-        new_direction = sf::Vector2f(0, -1);
+        new_dir = sf::Vector2f(0, -1);
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
     {
-        new_direction = sf::Vector2f(0, 1);
+        new_dir = sf::Vector2f(0, 1);
     }
 
-    if (new_direction == -direction)
+    if (movement_dir == -new_dir)
     {
-        return direction;
+        return current_dir;
     }
-    return new_direction;
+    return new_dir;
 }

@@ -81,14 +81,11 @@ bool Entity::wouldCollide(Entity otherEntity, sf::Vector2f direction)
         return false;
     }
 
-    auto playerBounds = this->getGlobalBounds();
-    auto otherBounds = otherEntity.getGlobalBounds();
-    auto playerPos = this->getPosition();
-    auto otherPos = otherEntity.getPosition();
-    direction.x *= this->grid_size;
-    direction.y *= this->grid_size;
-    auto newPos = playerPos + direction;
-    sf::FloatRect newBounds(newPos, playerBounds.getSize());
+    auto playerSquare = this->getSquaredPosition();
+    auto otherSquare = otherEntity.getSquaredPosition();
+    std::cout << "Player square: " << playerSquare.x << ", " << playerSquare.y << std::endl;
+    std::cout << "Other square: " << otherSquare.x << ", " << otherSquare.y << std::endl;
+    playerSquare += direction;
 
-    return newBounds.intersects(otherBounds);
+    return playerSquare == otherSquare;
 }
