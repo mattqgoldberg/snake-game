@@ -3,6 +3,7 @@
 Player::Player(Entity entity) {
     this->entities.push_back(entity);
     this->score = 0;
+    this->high_score = 0;
 }
 
 void Player::increment_score() {
@@ -80,4 +81,14 @@ void Player::reset() {
 
     head.centerInSquare(sf::Vector2f(3, 3));
     this->entities.push_back(head);
+}
+
+void Player::setHighScore() {
+    if (this->score > this->high_score) {
+        this->high_score = this->score;
+    }
+}
+
+int Player::getHighScore() {
+    return this->high_score;
 }

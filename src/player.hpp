@@ -16,7 +16,10 @@ class Player {
         std::list<Entity> getEntities();
         std::list<Entity> getBabies();
         void reset();
+        void setHighScore();
+        int getHighScore();
     private:
         std::list<Entity> entities;
         int score;
+        int high_score;
 };

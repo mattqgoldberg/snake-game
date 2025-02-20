@@ -69,12 +69,15 @@ int main()
     font.loadFromFile("TimesNewRoman.otf");
 
     // CREATE SCORE TEXT
-    sf:: Text scoreText;
+    sf::Text scoreText;
     setUpText(scoreText, font, "Score: 0", 24, sf::Color::White, sf::Vector2f(10, 710));
 
     // CREATE GAME OVER TEXT
     sf::Text gameOverText;
     setUpText(gameOverText, font, "Game Over!", 48, sf::Color::White, sf::Vector2f(300, 300));
+
+    sf::Text highScoreText;
+    setUpText(highScoreText, font, "High Score: 0", 24, sf::Color::White, sf::Vector2f(200, 710));
 
     // LOAD BABY SOUND FILE
     sf::SoundBuffer baby_buffer;
@@ -145,6 +148,8 @@ int main()
                     if (player.getHead().wouldCollide(entity, direction))
                     {
                         game_over = true;
+                        player.setHighScore();
+                        highScoreText.setString("High Score: " + std::to_string(player.getHighScore()));
                         baby_sound.stop();
                         no_sound.play();
                     }
@@ -153,6 +158,8 @@ int main()
                 if (player.getHead().wouldBeOutOfBounds(direction, sf::Vector2f(GRID_WIDTH, GRID_HEIGHT)))
                 {
                     game_over = true;
+                    player.setHighScore();
+                    highScoreText.setString("High Score: " + std::to_string(player.getHighScore()));
                     baby_sound.stop();
                     no_sound.play();
                 }
@@ -195,16 +202,12 @@ int main()
             matt.draw(window);
             player.draw(window);
             window.draw(scoreText);
+            window.draw(highScoreText);
         }
 
         else {
-            sf::Text gameOverText;
-            gameOverText.setFont(font);
-            gameOverText.setCharacterSize(48);
-            gameOverText.setFillColor(sf::Color::White);
-            gameOverText.setPosition(300, 300);
-            gameOverText.setString("Game Over!");
             window.draw(gameOverText);
+            window.draw(highScoreText);
         }
         
         window.display();
