@@ -15,12 +15,13 @@ const int GRID_HEIGHT = 700;
 const int GRID_SIZE = 100;
 const float GAME_SPEED = 1.f;
 bool game_over = false;
-
+bool paused = false;
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Snake Game");
-    
+    window.setKeyRepeatEnabled(false);
+
     Grid grid(GRID_WIDTH, GRID_HEIGHT, GRID_SIZE);
 
     // LOAD PLAYER TEXTURE
@@ -78,8 +79,13 @@ int main()
     sf::Text gameOverText;
     setUpText(gameOverText, font, "Game Over!", 48, sf::Color::White, sf::Vector2f(300, 300));
 
+    // CREATE HIGH SCORE TEXT
     sf::Text highScoreText;
     setUpText(highScoreText, font, "High Score: 0", 24, sf::Color::White, sf::Vector2f(200, 710));
+
+    // CREATE PAUSED TEXT
+    sf::Text pausedText;
+    setUpText(pausedText, font, "Paused", 48, sf::Color::White, sf::Vector2f(300, 300));
 
     // LOAD BABY SOUND FILE
     sf::SoundBuffer baby_buffer;
@@ -102,6 +108,10 @@ int main()
     // GAME CLOCK USED FOR MOVEMENT
     sf::Clock clock;
 
+
+    // CLOCK USED FOR PAUSE
+    sf::Clock pauseClock;
+
     // INITIALIZE DIRECTION AND MOVEMENT DIRECTION
     sf::Vector2f direction(0, 0);
     sf::Vector2f movement_direction(0, 0);
@@ -115,6 +125,17 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+            if (event.type == sf::Event::KeyPressed)
+            {
+                // PAUSE GAME
+                if (event.key.code == sf::Keyboard::Key::Escape) {
+                    if (pauseClock.getElapsedTime().asMilliseconds() > 200)
+                    {
+                        paused = !paused;
+                        pauseClock.restart();
+                    }
+                }
+            }
         }
 
         // CHANGE DIRECTION BASED ON INPUT
@@ -132,16 +153,11 @@ int main()
             movement_direction = sf::Vector2f(0,0);
             std::string str_score = "Score: " + std::to_string(player.get_score());
             scoreText.setString(str_score);
-        }
-
-        // PAUSE GAME
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-        {
-            direction = sf::Vector2f(0,0);
+            paused = false;
         }
 
         // MOVE PLAYER BASED ON GAME SPEED
-        if (clock.getElapsedTime().asMilliseconds() > 200/GAME_SPEED)
+        if (clock.getElapsedTime().asMilliseconds() > 200/GAME_SPEED && !paused)
         {
             if (direction != sf::Vector2f(0,0) && !game_over)
             {
@@ -207,6 +223,10 @@ int main()
             player.draw(window);
             window.draw(scoreText);
             window.draw(highScoreText);
+            if (paused)
+            {
+                window.draw(pausedText);
+            }
         }
 
         else {
