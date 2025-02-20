@@ -85,3 +85,14 @@ bool Entity::wouldCollide(Entity otherEntity, sf::Vector2f direction)
 
     return playerSquare == otherSquare;
 }
+
+void Entity::randomizePosition(const int GRID_WIDTH, const int GRID_HEIGHT, const int GRID_SIZE)
+{
+    int x_max = GRID_WIDTH / this->grid_size - 1;
+    int y_max = GRID_HEIGHT / this->grid_size - 1;
+    int rand_x = std::rand() % (x_max + 1);
+    int rand_y = std::rand() % (y_max + 1);
+    auto size = this->getGlobalBounds().getSize();
+    sf::Vector2f newPos(rand_x,rand_y);
+    this->centerInSquare(newPos);
+}

@@ -62,7 +62,9 @@ int main()
     // CREATE MATT ENTITY
     sf::Vector2f mattPos(0,0);
     Entity matt(GRID_SIZE, mattPos, mattSprite);
-    randomizeMatt(matt, playerEntity, GRID_WIDTH, GRID_HEIGHT, GRID_SIZE);
+    do {
+        matt.randomizePosition(GRID_WIDTH, GRID_HEIGHT, GRID_SIZE);
+    } while (matt.getSquaredPosition() == player.getHead().getSquaredPosition());
 
     // LOAD FONT
     sf::Font font;
@@ -123,8 +125,9 @@ int main()
         {
             game_over = false;
             player.reset();
-            auto playerHead = player.getHead();
-            randomizeMatt(matt, playerHead, GRID_WIDTH, GRID_HEIGHT, GRID_SIZE);
+            do {
+                matt.randomizePosition(GRID_WIDTH, GRID_HEIGHT, GRID_SIZE);
+            } while (matt.getSquaredPosition() == player.getHead().getSquaredPosition());
             direction = sf::Vector2f(0,0);
             movement_direction = sf::Vector2f(0,0);
             std::string str_score = "Score: " + std::to_string(player.get_score());
@@ -167,8 +170,9 @@ int main()
                 if (player.getHead().wouldCollide(matt, direction))
                 {
 
-                    auto playerHead = player.getHead();
-                    randomizeMatt(matt, playerHead, GRID_WIDTH, GRID_HEIGHT, GRID_SIZE);
+                    do {
+                        matt.randomizePosition(GRID_WIDTH, GRID_HEIGHT, GRID_SIZE);
+                    } while (matt.getSquaredPosition() == player.getHead().getSquaredPosition());
                     
                     player.increment_score();
                     int randomNumber = std::rand() % 2;

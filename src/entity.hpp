@@ -15,6 +15,7 @@ public:
     sf::Vector2f getSquaredPosition();
     bool wouldBeOutOfBounds(sf::Vector2f direction, sf::Vector2f grid_size);
     bool wouldCollide(Entity entity, sf::Vector2f direction);
+    void randomizePosition(const int GRID_WIDTH, const int GRID_HEIGHT, const int GRID_SIZE);
 private:
     sf::Sprite sprite;
     int grid_size;
