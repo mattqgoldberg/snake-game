@@ -1,8 +1,4 @@
-#include "grid.h"
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include <optional>
-#include <iostream>
+#include "grid.hpp"
 
 Grid::Grid(int screen_w, int screen_h, int square_length)
 {

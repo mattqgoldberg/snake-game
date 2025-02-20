@@ -1,7 +1,4 @@
-#include "player.h"
-#include "entity.h"
-#include <SFML/Graphics.hpp>
-#include <iostream>
+#include "player.hpp"
 
 Player::Player(Entity entity) {
     this->entities.push_back(entity);
@@ -45,12 +42,6 @@ void Player::move(sf::Vector2f direction) {
         it++;
     }
     while (it != this->entities.end());
-}
-
-void Player::printPositions() {
-    for (auto& entity : this->entities) {
-        std::cout << "Position: " << entity.getPosition().x << ", " << entity.getPosition().y << std::endl;
-    }
 }
 
 Entity Player::getHead() {

@@ -1,35 +1,21 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include <iostream>
-#include "grid.h"
-#include "entity.h"
-#include "input.h"
-#include "player.h"
-#include <filesystem>
-#include <thread>
-#include <chrono>
 #include <SFML/Audio.hpp>
+#include <iostream>
+#include "grid.hpp"
+#include "entity.hpp"
+#include "input.hpp"
+#include "player.hpp"
+#include "setup.hpp"
 
-int WINDOW_WIDTH = 800;
-int WINDOW_HEIGHT = 800;
-int GRID_WIDTH = 800;
-int GRID_HEIGHT = 700;
-int GRID_SIZE = 100;
+const int WINDOW_WIDTH = 800;
+const int WINDOW_HEIGHT = 800;
+const int GRID_WIDTH = 800;
+const int GRID_HEIGHT = 700;
+const int GRID_SIZE = 100;
+const float GAME_SPEED = 1.f;
 bool game_over = false;
 
-void randomizeMatt(Entity& matt, Entity player)
-{
-    sf::Vector2f mattSquare(0,0);
-    do {
-        int x_max = GRID_WIDTH / GRID_SIZE - 1;
-        int y_max = GRID_HEIGHT / GRID_SIZE - 1;
-        int rand_x = std::rand() % (x_max + 1);
-        int rand_y = std::rand() % (y_max + 1);
-        auto size = matt.getGlobalBounds().getSize();
-        mattSquare = sf::Vector2f(rand_x,rand_y);
-        matt.centerInSquare(mattSquare);
-    } while (mattSquare == player.getSquaredPosition());
-}
 
 int main()
 {
@@ -37,96 +23,85 @@ int main()
     
     Grid grid(GRID_WIDTH, GRID_HEIGHT, GRID_SIZE);
 
-    
+    // LOAD PLAYER TEXTURE
     sf::Texture playerTexture;
-
-    std::cout << "Current working directory: " 
-    << std::filesystem::current_path() << std::endl;
-
     if (!playerTexture.loadFromFile("avatar.png")) {
         std::cerr << "Error loading texture!" << std::endl;
         return -1;
     }
 
+    // LOAD MATT TEXTURE
     sf::Texture mattTexture;
     if (!mattTexture.loadFromFile("matt.png")) {
         std::cerr << "Error loading texture!" << std::endl;
         return -1;
     }
 
+    // LOAD PLAYER SPRITE
     sf::Sprite playerSprite;
-    playerSprite.setTexture(playerTexture);
-    auto bounds = playerSprite.getGlobalBounds();
-    float scaleX = (GRID_SIZE * 0.67) / bounds.width;
-    float scaleY = (GRID_SIZE * 0.87) / bounds.height;
-    playerSprite.setScale(scaleX, scaleY);
+    setUpSprite(playerSprite, playerTexture, GRID_SIZE, 0.67, 0.87);
 
+    // LOAD MATT SPRITE
+    sf::Sprite mattSprite;
+    setUpSprite(mattSprite, mattTexture, GRID_SIZE, 0.7, 0.9);
+
+    // LOAD MINI PLAYER SPRITE
     sf::Sprite miniSprite;
-    miniSprite.setTexture(playerTexture);
-    scaleX = (GRID_SIZE * 0.37) / bounds.width;
-    scaleY = (GRID_SIZE * 0.37) / bounds.height;
-    miniSprite.setScale(scaleX, scaleY);
+    setUpSprite(miniSprite, playerTexture, GRID_SIZE, 0.37, 0.37);
 
+    // LOAD MINI MATT SPRITE
     sf::Sprite miniMattSprite;
-    miniMattSprite.setTexture(mattTexture);
-    scaleX = (GRID_SIZE * 0.4) / bounds.width;
-    scaleY = (GRID_SIZE * 0.4) / bounds.height;
-    miniMattSprite.setScale(scaleX, scaleY);
+    setUpSprite(miniMattSprite, mattTexture, GRID_SIZE, 0.4, 0.4);
 
-
+    // CREATE PLAYER ENTITY
     sf::Vector2f playerSquare(3,3);
     Entity playerEntity(GRID_SIZE, sf::Vector2f(0,0), playerSprite);
     playerEntity.centerInSquare(playerSquare);
     Player player(playerEntity);
 
-    sf::Sprite mattSprite;
-    mattSprite.setTexture(mattTexture);
-    bounds = mattSprite.getGlobalBounds();
-    scaleX = (GRID_SIZE * 0.7) / bounds.width;
-    scaleY = (GRID_SIZE * 0.9) / bounds.height;
-    mattSprite.setScale(scaleX, scaleY);
-
+    // CREATE MATT ENTITY
     sf::Vector2f mattPos(0,0);
     Entity matt(GRID_SIZE, mattPos, mattSprite);
-    randomizeMatt(matt, playerEntity);
+    randomizeMatt(matt, playerEntity, GRID_WIDTH, GRID_HEIGHT, GRID_SIZE);
 
+    // LOAD FONT
     sf::Font font;
     font.loadFromFile("TimesNewRoman.otf");
+
+    // CREATE SCORE TEXT
     sf:: Text scoreText;
-    scoreText.setFont(font);
-    scoreText.setCharacterSize(24);
-    scoreText.setFillColor(sf::Color::White);
-    scoreText.setPosition(10, 710);
-    scoreText.setString("Score: 0");
+    setUpText(scoreText, font, "Score: 0", 24, sf::Color::White, sf::Vector2f(10, 710));
 
+    // CREATE GAME OVER TEXT
     sf::Text gameOverText;
-    gameOverText.setFont(font);
-    gameOverText.setCharacterSize(60);
-    gameOverText.setFillColor(sf::Color::White);
-    gameOverText.setPosition(300, 300);
-    gameOverText.setString("Game Over!");
+    setUpText(gameOverText, font, "Game Over!", 48, sf::Color::White, sf::Vector2f(300, 300));
 
-
+    // LOAD BABY SOUND FILE
     sf::SoundBuffer baby_buffer;
     if (!baby_buffer.loadFromFile("baby1.mp3"))
         return -1;
 
+    // CREATE BABY SOUND OBJECT
     sf::Sound baby_sound;
     baby_sound.setBuffer(baby_buffer);
     
+    // LOAD NO SOUND FILE
     sf::SoundBuffer no_buffer;
     if (!no_buffer.loadFromFile("no1.mp3"))
         return -1;
 
+    // CREATE NO SOUND OBJECT
     sf::Sound no_sound;
     no_sound.setBuffer(no_buffer);
 
-
+    // GAME CLOCK USED FOR MOVEMENT
     sf::Clock clock;
 
+    // INITIALIZE DIRECTION AND MOVEMENT DIRECTION
     sf::Vector2f direction(0, 0);
     sf::Vector2f movement_direction(0, 0);
 
+    // MAIN LOOP
     while (window.isOpen())
     {
         sf::Event event;
@@ -137,25 +112,30 @@ int main()
                 window.close();
         }
 
+        // CHANGE DIRECTION BASED ON INPUT
         direction = handleInput(movement_direction, direction);
 
+        // RESET GAME
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && game_over)
         {
             game_over = false;
             player.reset();
-            randomizeMatt(matt, player.getHead());
+            auto playerHead = player.getHead();
+            randomizeMatt(matt, playerHead, GRID_WIDTH, GRID_HEIGHT, GRID_SIZE);
             direction = sf::Vector2f(0,0);
             movement_direction = sf::Vector2f(0,0);
             std::string str_score = "Score: " + std::to_string(player.get_score());
             scoreText.setString(str_score);
         }
 
+        // PAUSE GAME
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
         {
             direction = sf::Vector2f(0,0);
         }
 
-        if (clock.getElapsedTime().asMilliseconds() > 200)
+        // MOVE PLAYER BASED ON GAME SPEED
+        if (clock.getElapsedTime().asMilliseconds() > 200/GAME_SPEED)
         {
             if (direction != sf::Vector2f(0,0) && !game_over)
             {
@@ -169,17 +149,19 @@ int main()
                         no_sound.play();
                     }
                 }
-
+                // END GAME IF PLAYER WOULD BE OUT OF BOUNDS
                 if (player.getHead().wouldBeOutOfBounds(direction, sf::Vector2f(GRID_WIDTH, GRID_HEIGHT)))
                 {
                     game_over = true;
                     baby_sound.stop();
                     no_sound.play();
                 }
-
+                // INCREMENT SCORE AND ADD BABY IF PLAYER WOULD COLLIDE WITH MATT
                 if (player.getHead().wouldCollide(matt, direction))
                 {
-                    randomizeMatt(matt, player.getHead());
+
+                    auto playerHead = player.getHead();
+                    randomizeMatt(matt, playerHead, GRID_WIDTH, GRID_HEIGHT, GRID_SIZE);
                     
                     player.increment_score();
                     int randomNumber = std::rand() % 2;
@@ -197,6 +179,7 @@ int main()
                     scoreText.setString(str_score);
                     
                 }
+                // MOVE PLAYER
                 else {
                     player.move(direction);
                     movement_direction = direction;

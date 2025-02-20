@@ -1,6 +1,4 @@
-#include <SFML/Graphics.hpp>
-#include "entity.h"
-#include <iostream>
+#include "entity.hpp"
 
 Entity::Entity(int grid_size, sf::Vector2f position, sf::Sprite sprite)
 {
@@ -83,8 +81,6 @@ bool Entity::wouldCollide(Entity otherEntity, sf::Vector2f direction)
 
     auto playerSquare = this->getSquaredPosition();
     auto otherSquare = otherEntity.getSquaredPosition();
-    std::cout << "Player square: " << playerSquare.x << ", " << playerSquare.y << std::endl;
-    std::cout << "Other square: " << otherSquare.x << ", " << otherSquare.y << std::endl;
     playerSquare += direction;
 
     return playerSquare == otherSquare;

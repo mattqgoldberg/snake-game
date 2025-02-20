@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include <SFML/Graphics.hpp>
-#include <optional>
 
 struct GameSquare {
     sf::RectangleShape outer_square;

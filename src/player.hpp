@@ -1,5 +1,6 @@
 #pragma once
-#include "entity.h"
+#include <SFML/Graphics.hpp>
+#include "entity.hpp"
 #include <list>
 
 class Player {
@@ -12,7 +13,6 @@ class Player {
         Entity getHead();
         Entity getTail();
         void addEntity(Entity entity);
-        void printPositions();
         std::list<Entity> getEntities();
         std::list<Entity> getBabies();
         void reset();
