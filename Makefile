@@ -8,5 +8,5 @@ all: compile
 
 compile:	
 	mkdir -p bin
-	g++ $(cppFileNames) -std=c++20 -I$(SFML_PATH)/include -o bin/app -L$(SFML_PATH)/lib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
+	g++ $(cppFileNames) -g -std=c++20 -I$(SFML_PATH)/include -o bin/app -L$(SFML_PATH)/lib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
 
