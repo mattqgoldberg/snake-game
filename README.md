@@ -1,3 +1,9 @@
 # Usage
 
-Press `Cmd+Shift+B` in VSCode to build and `FN+F5` to run.
+1. `make`
+2. `./bin/app`
+
+# Controls
+
+- Arrow keys for movement
+- Space to restart

@@ -8,6 +8,7 @@
 #include "player.hpp"
 #include "setup.hpp"
 
+
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 800;
 const int GRID_WIDTH = 800;
@@ -24,16 +25,17 @@ int main()
 
     Grid grid(GRID_WIDTH, GRID_HEIGHT, GRID_SIZE);
 
+
     // LOAD PLAYER TEXTURE
     sf::Texture playerTexture;
-    if (!playerTexture.loadFromFile("avatar.png")) {
+    if (!playerTexture.loadFromFile("src/assets/sprites/avatar.png")) {
         std::cerr << "Error loading texture!" << std::endl;
         return -1;
     }
 
     // LOAD MATT TEXTURE
     sf::Texture mattTexture;
-    if (!mattTexture.loadFromFile("matt.png")) {
+    if (!mattTexture.loadFromFile("src/assets/sprites/matt.png")) {
         std::cerr << "Error loading texture!" << std::endl;
         return -1;
     }
@@ -69,7 +71,7 @@ int main()
 
     // LOAD FONT
     sf::Font font;
-    font.loadFromFile("TimesNewRoman.otf");
+    font.loadFromFile("src/assets/fonts/TimesNewRoman.otf");
 
     // CREATE SCORE TEXT
     sf::Text scoreText;
@@ -89,7 +91,7 @@ int main()
 
     // LOAD BABY SOUND FILE
     sf::SoundBuffer baby_buffer;
-    if (!baby_buffer.loadFromFile("baby1.mp3"))
+    if (!baby_buffer.loadFromFile("src/assets/sounds/baby1.mp3"))
         return -1;
 
     // CREATE BABY SOUND OBJECT
@@ -98,7 +100,7 @@ int main()
     
     // LOAD NO SOUND FILE
     sf::SoundBuffer no_buffer;
-    if (!no_buffer.loadFromFile("no1.mp3"))
+    if (!no_buffer.loadFromFile("src/assets/sounds/no1.mp3"))
         return -1;
 
     // CREATE NO SOUND OBJECT
